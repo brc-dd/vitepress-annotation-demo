@@ -1,0 +1,15 @@
+{
+  "type": "module",
+  "scripts": {
+    "dev": "vitepress dev",
+    "build": "vitepress build",
+    "preview": "vitepress preview"
+  },
+  "devDependencies": {
+    "@mdit-vue/shared": "^3.0.2",
+    "@types/markdown-it": "^14.1.2",
+    "typescript": "^6.0.3",
+    "vitepress": "2.0.0-alpha.17",
+    "vue": "^3.5.35"
+  }
+}
