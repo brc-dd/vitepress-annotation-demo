@@ -23,8 +23,10 @@ console.log('another annotation' /* @2 */)
     - Lists work.
     - _Inline markdown_ **works too**.
 
-    ```ts
-    console.log('nested code in annotation')
+    ```ts {3}
+    console.log('nested code in annotation') // make it longer to test scrolling
+    // multiple lines
+    console.log('line 3')
     ```
 
 Paragraph outside the annotation.

@@ -1,0 +1,206 @@
+/* Code annotations: inline reference markers inside code blocks, the
+ * annotation definition blocks they point to, and the hover tooltip rendered
+ * by the <code-annotation-ref> custom element. */
+
+/* ---------------------------------------------------------------- *
+ * Inline reference marker (inside code blocks)
+ * ---------------------------------------------------------------- */
+
+/* The custom element is a light-DOM wrapper; keep it out of the layout. */
+code-annotation-ref {
+  display: inline;
+}
+
+/* `.vp-doc` prefix raises specificity above VitePress's own `.vp-doc a` rule,
+ * which would otherwise paint the digit in the link colour and hide it. */
+.vp-doc .code-annotation-ref__link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  min-width: 1.25em;
+  height: 1.25em;
+  padding: 0 0.35em;
+  margin: 0 0.1em;
+  border-radius: 1em;
+  /* Lift it like a footnote marker without disturbing the line height. */
+  position: relative;
+  top: -0.15em;
+  font-size: 0.75em;
+  font-weight: 600;
+  font-family: var(--vp-font-family-base);
+  line-height: 1;
+  text-decoration: none;
+  color: var(--vp-c-bg);
+  background-color: var(--vp-c-brand-1);
+  cursor: pointer;
+  transition:
+    background-color 0.2s,
+    transform 0.1s;
+}
+
+.vp-doc .code-annotation-ref__link:hover,
+.vp-doc .code-annotation-ref__link:focus-visible {
+  color: var(--vp-c-bg);
+  background-color: var(--vp-c-brand-2);
+  transform: scale(1.1);
+}
+
+.vp-doc .code-annotation-ref__link:focus-visible {
+  outline: 2px solid var(--vp-c-brand-1);
+  outline-offset: 2px;
+}
+
+/* ---------------------------------------------------------------- *
+ * Annotation definition block
+ * ---------------------------------------------------------------- */
+
+.code-annotation {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75em;
+  margin: 1em 0;
+  padding: 0.75em 1em;
+  border: 1px solid var(--vp-c-divider);
+  border-radius: 8px;
+  background-color: var(--vp-c-bg-soft);
+  scroll-margin-top: calc(var(--vp-nav-height) + 16px);
+}
+
+/* The number badge / back-link, aligned with the first line of content. */
+.vp-doc .code-annotation__label {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-sizing: border-box;
+  min-width: 1.5em;
+  height: 1.5em;
+  padding: 0 0.4em;
+  /* Nudge onto the content's baseline grid. */
+  margin-top: 0.375em;
+  border-radius: 1em;
+  font-size: 0.8em;
+  font-weight: 600;
+  line-height: 1;
+  text-decoration: none;
+  color: var(--vp-c-bg);
+  background-color: var(--vp-c-brand-1);
+  transition: background-color 0.2s;
+}
+
+.vp-doc .code-annotation__label:hover,
+.vp-doc .code-annotation__label:focus-visible {
+  color: var(--vp-c-bg);
+  background-color: var(--vp-c-brand-2);
+}
+
+.code-annotation__content {
+  flex: 1;
+  min-width: 0;
+}
+
+/* Collapse the outer margins of the rendered markdown so the box stays tight. */
+.code-annotation__content > :first-child {
+  margin-top: 0;
+}
+
+.code-annotation__content > :last-child {
+  margin-bottom: 0;
+}
+
+/* Briefly highlight a definition when navigated to via its marker. */
+.code-annotation:target {
+  border-color: var(--vp-c-brand-1);
+  box-shadow: 0 0 0 1px var(--vp-c-brand-1);
+}
+
+/* ---------------------------------------------------------------- *
+ * Hover tooltip (teleported to <body>)
+ * ---------------------------------------------------------------- */
+
+.code-annotation-tooltip {
+  position: fixed;
+  z-index: 100;
+  box-sizing: border-box;
+  max-width: min(360px, calc(100vw - 16px));
+  border: 1px solid var(--vp-c-divider);
+  border-radius: 8px;
+  background-color: var(--vp-c-bg-elv);
+  box-shadow: var(--vp-shadow-3);
+  opacity: 0;
+  transform: translateY(4px);
+  transition:
+    opacity 0.15s ease,
+    transform 0.15s ease;
+  pointer-events: none;
+}
+
+.code-annotation-tooltip.is-ready {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.code-annotation-tooltip__content {
+  max-height: min(60vh, 320px);
+  padding: 0.6em 0.85em;
+  overflow: auto;
+  overscroll-behavior: contain;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+/* Override .vp-doc styles here to make things compact. */
+.code-annotation-tooltip__content {
+  [class^='language-'] {
+    margin: 0.75em -0.85em !important;
+    border-radius: 0 !important;
+
+    .copy {
+      display: none;
+    }
+  }
+
+  & > * {
+    margin: 0.5em 0 !important;
+    line-height: 1.4 !important;
+
+    &:first-child {
+      margin-top: 0 !important;
+    }
+
+    &:last-child {
+      margin-bottom: 0 !important;
+    }
+  }
+}
+
+/* Arrow connecting the tooltip to the marker. */
+.code-annotation-tooltip__arrow {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  background-color: var(--vp-c-bg-elv);
+  border: 1px solid var(--vp-c-divider);
+  transform: translateX(-50%) rotate(45deg) scale(0.707);
+}
+
+.code-annotation-tooltip--top .code-annotation-tooltip__arrow {
+  bottom: -6px;
+  border-top: none;
+  border-left: none;
+}
+
+.code-annotation-tooltip--bottom .code-annotation-tooltip__arrow {
+  top: -6px;
+  border-bottom: none;
+  border-right: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .code-annotation-ref__link,
+  .code-annotation-tooltip {
+    transition: none;
+  }
+}

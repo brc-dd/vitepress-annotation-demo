@@ -152,14 +152,16 @@ function replaceAnnotationMarkers(md: MarkdownIt, html: string, env: CodeAnnotat
     const codeRefId = getCodeRefId(ref)
 
     return [
+      `<code-annotation-ref annotation-id="${escapeHtml(annotationId)}">`,
       `<a id="${escapeHtml(codeRefId)}"`,
-      ` class="code-annotation-ref vp-copy-ignore"`,
+      ` class="code-annotation-ref__link vp-copy-ignore"`,
       ` href="#${escapeHtml(annotationId)}"`,
       ` data-ref="${escapeHtml(ref)}"`,
       ` aria-describedby="${escapeHtml(annotationId)}"`,
       ` aria-label="Code annotation ${escapeHtml(ref)}">`,
       `${escapeHtml(ref)}`,
-      `</a>`
+      `</a>`,
+      `</code-annotation-ref>`
     ].join('')
   })
 }
